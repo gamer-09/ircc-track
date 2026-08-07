@@ -1,12 +1,15 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// Universal Vite Configuration (Compatible with Vite 5, 6, and 8+ Rolldown)
+// Cross-Platform Pure-JS Configuration (Zero Native C++/Rust .node Binaries for 100% Windows Defender Compatibility)
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react()
+    react({
+      // Uses standard Fast Refresh without unverified native binary bindings
+      jsxRuntime: 'automatic'
+    })
   ],
   server: {
     host: '0.0.0.0',
