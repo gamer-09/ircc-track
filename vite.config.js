@@ -1,15 +1,12 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// Cross-Platform Pure-JS Configuration (Zero Native C++/Rust .node Binaries for 100% Windows Defender Compatibility)
+// Zero-Babel, Pure Built-in JSX Configuration
+// Eliminates the `vite:react-babel` deprecation warnings in Vite 8 / Rolldown
+// and avoids Windows Defender native .node binary blocks.
 export default defineConfig({
   plugins: [
-    tailwindcss(),
-    react({
-      // Uses standard Fast Refresh without unverified native binary bindings
-      jsxRuntime: 'automatic'
-    })
+    tailwindcss()
   ],
   server: {
     host: '0.0.0.0',
