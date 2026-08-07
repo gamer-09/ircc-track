@@ -12,7 +12,7 @@ import {
   Layers, 
   ChevronDown,
   RefreshCw,
-  Zap
+  KeyRound
 } from 'lucide-react';
 import { playCyberSound, toggleAudioSound } from '../utils/audio';
 
@@ -21,6 +21,7 @@ export const Navbar = ({
   profiles, 
   onSelectProfile, 
   onOpenNewModal, 
+  onOpenSyncModal,
   onOpenDossier, 
   onScanUpdates,
   isScanning,
@@ -83,9 +84,9 @@ export const Navbar = ({
 
   const navTabs = [
     { id: 'dashboard', label: 'HUD DASHBOARD', icon: Layers },
-    { id: 'estimator', label: 'COUNTRY PROCESSING & AI ETA', icon: Radar },
+    { id: 'estimator', label: 'COUNTRY PROCESSING & DECISION DATES', icon: Radar },
     { id: 'actions', label: 'ACTION CENTER & MISSING ITEMS', icon: ShieldCheck, badge: currentProfile?.actionItems?.filter(a => a.status === 'needs_action').length || 0 },
-    { id: 'documents', label: 'DOCUMENTS & OCR LOCKER', icon: FileText },
+    { id: 'documents', label: 'DOCUMENTS & PORTAL COMPLIANCE', icon: FileText },
     { id: 'tools', label: 'WEBFORM & GCMS DECODER', icon: Sparkles },
     { id: 'radar', label: 'POLICY RADAR & PRE-ARRIVAL', icon: Bell },
   ];
@@ -115,7 +116,7 @@ export const Navbar = ({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
-            <span className="font-semibold tracking-wider uppercase text-[10px] sm:text-[11px]">IRCC SYNC NODE: ONLINE</span>
+            <span className="font-semibold tracking-wider uppercase text-[10px] sm:text-[11px]">IRCC TELEMETRY: ONLINE</span>
           </div>
           <span className="hidden sm:inline text-slate-700">|</span>
           <div className="hidden sm:flex items-center gap-1.5 text-slate-300">
@@ -129,11 +130,16 @@ export const Navbar = ({
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden lg:flex items-center gap-2 bg-cyan-950/50 px-2.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300">
-            <span className="text-[10px] text-cyan-400 uppercase font-bold">ACTIVE FILE:</span>
-            <span className="font-bold">{currentProfile?.applicationNumber || 'N/A'}</span>
-            <span className="text-slate-400">({currentProfile?.countryName})</span>
-          </div>
+          <button
+            onClick={() => {
+              playCyberSound('click');
+              onOpenSyncModal();
+            }}
+            className="flex items-center gap-1 px-2.5 py-0.5 rounded text-xs bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900 transition-colors font-mono font-bold"
+          >
+            <KeyRound className="w-3 h-3 text-cyan-400" />
+            <span>SYNC MY CASE</span>
+          </button>
 
           <button
             onClick={handleSoundToggle}
@@ -169,7 +175,7 @@ export const Navbar = ({
               </span>
             </div>
             <p className="text-[10px] font-mono text-slate-400 tracking-tight hidden sm:block">
-              FUTURISTIC VISA INTELLIGENCE & ACTION RADAR
+              CANADIAN IMMIGRATION INTELLIGENCE & TRACKING
             </p>
           </div>
         </div>
@@ -186,7 +192,7 @@ export const Navbar = ({
                 {currentProfile?.applicantName || 'Select Profile'}
               </div>
               <div className="text-[10px] text-slate-400 truncate max-w-[130px]">
-                {currentProfile?.streamName?.slice(0, 20)}...
+                {currentProfile?.applicationNumber}
               </div>
             </div>
             <ChevronDown className={`w-3.5 h-3.5 text-cyan-400 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
@@ -248,8 +254,8 @@ export const Navbar = ({
             }`}
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">{isScanning ? 'SCANNING IRCC...' : 'CHECK UPDATES'}</span>
-            <span className="sm:hidden">{isScanning ? 'SCAN...' : 'SCAN'}</span>
+            <span className="hidden sm:inline">{isScanning ? 'CHECKING GCKEY...' : 'CHECK STATUS'}</span>
+            <span className="sm:hidden">{isScanning ? '...' : 'STATUS'}</span>
           </button>
 
           {/* Export / Printable Dossier Button */}
