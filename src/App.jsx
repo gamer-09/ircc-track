@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { SAMPLE_PROFILES } from './data/sampleProfiles';
 import { COUNTRIES_DATA } from './data/countryProcessingData';
-import { VISA_STREAMS } from './data/visaStreams';
 import { CyberBackground } from './components/CyberBackground';
 import { Navbar } from './components/Navbar';
 import { StatusOverview } from './components/StatusOverview';
@@ -15,9 +14,11 @@ import { GCMSDecoder } from './components/GCMSDecoder';
 import { PolicyRadar } from './components/PolicyRadar';
 import { ApplicationModal } from './components/ApplicationModal';
 import { DossierReportModal } from './components/DossierReportModal';
+import { LoadingScreen } from './components/LoadingScreen';
 import { playCyberSound } from './utils/audio';
 
 export function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [profiles, setProfiles] = useState(() => {
     try {
       const saved = localStorage.getItem('ircc_aura_profiles');
@@ -55,16 +56,16 @@ export function App() {
       setIsScanning(false);
       playCyberSound('success');
       confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.15 }
+        particleCount: 65,
+        spread: 70,
+        origin: { y: 0.18 }
       });
       setScanToast({
-        title: 'IRCC GCKey & Tracker Synchronized',
-        message: 'No new adverse requests. Medical: Passed. Background Check (BGC IP2) is progressing smoothly in active queue.'
+        title: 'IRCC GCKey & Tracker Synchronized [OK]',
+        message: 'No new adverse requests. Medical: Passed. Background Check (BGC IP2) is progressing smoothly in active visa office tray.'
       });
-      setTimeout(() => setScanToast(null), 5000);
-    }, 2000);
+      setTimeout(() => setScanToast(null), 5500);
+    }, 1800);
   };
 
   // Toggle Action Status
@@ -134,8 +135,12 @@ export function App() {
     setActiveProfileId(newProf.id);
   };
 
+  if (isLoading) {
+    return <LoadingScreen onComplete={() => setIsLoading(false)} />;
+  }
+
   return (
-    <div className="relative min-h-screen bg-[#030712] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black">
+    <div className="relative min-h-screen bg-[#02050f] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black">
       {/* Interactive Cyber Particle Background */}
       <CyberBackground />
 
@@ -154,20 +159,23 @@ export function App() {
 
       {/* Live Scan Notification Toast */}
       {scanToast && (
-        <div className="fixed top-20 right-6 z-50 max-w-md p-4 rounded-xl bg-[#091538] border border-cyan-400 shadow-glow-cyan font-mono text-xs text-white animate-bounce">
+        <div className="fixed top-20 right-4 sm:right-6 z-50 max-w-md p-4 rounded-2xl bg-[#091538]/95 border border-cyan-400 shadow-[0_0_35px_rgba(0,240,255,0.4)] font-mono text-xs text-white backdrop-blur-xl animate-fadeIn">
           <div className="flex items-center justify-between font-bold text-cyan-300 mb-1">
-            <span>{scanToast.title}</span>
-            <button onClick={() => setScanToast(null)} className="text-slate-400 hover:text-white">✕</button>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              {scanToast.title}
+            </span>
+            <button onClick={() => setScanToast(null)} className="text-slate-400 hover:text-white p-1">✕</button>
           </div>
-          <p className="text-slate-300 font-sans">{scanToast.message}</p>
+          <p className="text-slate-200 font-sans leading-relaxed">{scanToast.message}</p>
         </div>
       )}
 
-      {/* Main Content Area */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 py-6 space-y-6">
+      {/* Main Content Area with Smooth Tab Transitions */}
+      <main className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 py-6 space-y-6">
         {/* Render Tab Contents */}
         {activeTab === 'dashboard' && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
             <StatusOverview
               profile={currentProfile}
               countryData={countryData}
@@ -181,40 +189,46 @@ export function App() {
         )}
 
         {activeTab === 'estimator' && (
-          <CountryEstimator
-            activeProfile={currentProfile}
-            onSelectCountryForProfile={(countryCode) => {
-              setProfiles(prev => prev.map(p => {
-                if (p.id !== currentProfile.id) return p;
-                const matchCountry = COUNTRIES_DATA.find(c => c.code === countryCode);
-                return {
-                  ...p,
-                  countryCode,
-                  countryName: matchCountry ? matchCountry.name : p.countryName
-                };
-              }));
-            }}
-          />
+          <div className="animate-fadeIn">
+            <CountryEstimator
+              activeProfile={currentProfile}
+              onSelectCountryForProfile={(countryCode) => {
+                setProfiles(prev => prev.map(p => {
+                  if (p.id !== currentProfile.id) return p;
+                  const matchCountry = COUNTRIES_DATA.find(c => c.code === countryCode);
+                  return {
+                    ...p,
+                    countryCode,
+                    countryName: matchCountry ? matchCountry.name : p.countryName
+                  };
+                }));
+              }}
+            />
+          </div>
         )}
 
         {activeTab === 'actions' && (
-          <ActionCenter
-            profile={currentProfile}
-            onToggleAction={handleToggleAction}
-            onAddCustomAction={handleAddCustomAction}
-          />
+          <div className="animate-fadeIn">
+            <ActionCenter
+              profile={currentProfile}
+              onToggleAction={handleToggleAction}
+              onAddCustomAction={handleAddCustomAction}
+            />
+          </div>
         )}
 
         {activeTab === 'documents' && (
-          <DocumentLocker
-            profile={currentProfile}
-            onUploadSimulatedDoc={handleUploadSimulatedDoc}
-            onDeleteDoc={handleDeleteDoc}
-          />
+          <div className="animate-fadeIn">
+            <DocumentLocker
+              profile={currentProfile}
+              onUploadSimulatedDoc={handleUploadSimulatedDoc}
+              onDeleteDoc={handleDeleteDoc}
+            />
+          </div>
         )}
 
         {activeTab === 'tools' && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
             <WebformGenerator
               profile={currentProfile}
               countryData={countryData}
@@ -224,16 +238,18 @@ export function App() {
         )}
 
         {activeTab === 'radar' && (
-          <PolicyRadar />
+          <div className="animate-fadeIn">
+            <PolicyRadar />
+          </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-900 bg-[#030611]/90 mt-12 py-6 px-4 font-mono text-xs text-slate-500 text-center">
+      <footer className="relative z-10 border-t border-slate-900/80 bg-[#030612]/90 mt-12 py-6 px-4 font-mono text-xs text-slate-500 text-center">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-cyan-400 font-bold">
             <span>IRCC // AURA TRACKER HUD</span>
-            <span className="text-slate-600">|</span>
+            <span className="text-slate-700">|</span>
             <span className="text-slate-400 font-normal">Modern Futuristic Visa Intelligence Platform</span>
           </div>
           <div>
