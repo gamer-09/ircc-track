@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';
 
-// https://vitejs.dev/config/
+// Universal Vite Configuration (Compatible with Vite 5, 6, and 8+ Rolldown)
 export default defineConfig({
   plugins: [
     tailwindcss(),
