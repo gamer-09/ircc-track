@@ -6,13 +6,16 @@
 ![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite_5-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Online_%26_Deployed-10b981?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Archived-6b7280?style=for-the-badge)
 
 <p align="center">
   <strong>An ultra-modern, high-tech Canadian Visa Intelligence Platform & Application Tracker with real-time milestone telemetry, 50+ country processing estimators, AI ETA prediction, missing defect detection, settlement funds calculator, OCR document locker, and GCMS/ATIP decoder.</strong>
 </p>
 
 </div>
+
+> [!WARNING]
+> **This repository is archived.** It is no longer maintained and is kept for reference only.
 
 ---
 
